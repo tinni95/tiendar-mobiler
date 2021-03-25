@@ -15,16 +15,29 @@ import { Ionicons } from "@expo/vector-icons";
 import { parse } from "himalaya";
 import styled from "styled-components/native";
 import CustomMenu from "./components/CustomMenu";
+import {
+  BASE_URL,
+  HOME_PAGE,
+  PROFILE_PAGE,
+  SHOP_PAGE,
+  VENDITORI_PAGE,
+} from "./constants/Urls";
 
-const HOME_PAGE = "http://f3d0bf071707.ngrok.io/";
 export default function App() {
-  const [uri, setCurrentUri] = useState<string>("");
+  const [url, setUrl] = useState<string>(BASE_URL);
   const [loading, setLoading] = useState<boolean>(false);
   const webView = useRef<WebView | null>(null);
   const [menu, setMenu] = useState(null);
   const [open, setOpen] = useState(false);
   const INJECTED_JAVASCRIPT = `(function() {
+    document.querySelector('.et_pb_section_0_tb_footer').style.display = 'none';
     document.querySelector('.et-l').style.display = 'none';
+    document.querySelector('.et_pb_section_2').style.setProperty("padding","0px","important");
+    document.querySelector('.et_pb_row_2').style.setProperty("margin","0px","important");
+    document.querySelector('.et_pb_row_2').style.setProperty("width","100%");
+    document.querySelector('.et_pb_row_2').style.setProperty("padding","20px","important");
+    document.querySelector('.et_pb_module_header').style.setProperty("font-size","25px","important");
+
     setTimeout(function(){
       window.ReactNativeWebView.postMessage(document.querySelector('.et_mobile_menu').innerHTML);
    }, 2000);
@@ -85,50 +98,59 @@ export default function App() {
     ]).start(() => setOpen(false));
   };
 
+  const canGoBack =
+    url != BASE_URL &&
+    url != SHOP_PAGE &&
+    url != HOME_PAGE &&
+    url != PROFILE_PAGE &&
+    url != VENDITORI_PAGE;
   return (
     <>
       <View style={styles.container}>
         <CustomMenu
           left={left}
+          setUrl={setUrl}
           menu={menu}
           open={open}
+          url={url}
           opacity={opacity}
           slideOut={slideOut}
         />
         <View style={styles.headerBar}>
-          <TouchableOpacity style={{ paddingTop: 20 }} onPress={showMenu}>
-            <Ionicons name="md-menu" size={30} color="white" />
-          </TouchableOpacity>
-          <Image
-            style={{
-              width: 100,
-              resizeMode: "contain",
-              marginLeft: 25,
-              marginTop: 10,
-            }}
-            source={require("./assets/tiendar_logo.png")}
-          />
-          {uri != HOME_PAGE && (
-            <TouchableOpacity
-              onPress={onGoBack}
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                backgroundColor: "red",
-              }}
-            >
-              <Text>Go Back</Text>
+          <View style={{ flexDirection: "row" }}>
+            <TouchableOpacity style={{ paddingTop: 20 }} onPress={showMenu}>
+              <Ionicons name="md-menu" size={30} color="white" />
             </TouchableOpacity>
-          )}
+            <Image
+              style={{
+                width: 100,
+                resizeMode: "contain",
+                marginLeft: 25,
+                marginTop: 10,
+              }}
+              source={require("./assets/tiendar_logo.png")}
+            />
+          </View>
         </View>
+        {canGoBack && (
+          <TouchableOpacity
+            onPress={onGoBack}
+            style={{
+              backgroundColor: "#0769AD",
+              padding: 5,
+            }}
+          >
+            <Ionicons name="ios-arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+        )}
         <View style={styles.webViewContainer}>
           <WebView
             ref={webView}
             onLoad={() => console.log("Loading..")}
             onLoadStart={() => setLoading(true)}
             onLoadEnd={() => setLoading(false)}
-            onNavigationStateChange={(ev) => setCurrentUri(ev.url)}
-            source={{ uri: HOME_PAGE }}
+            onNavigationStateChange={(ev) => setUrl(ev.url)}
+            source={{ uri: url }}
             onMessage={onMessage}
             injectedJavaScript={INJECTED_JAVASCRIPT}
           />
@@ -145,7 +167,7 @@ const styles = StyleSheet.create({
   },
   headerBar: {
     flex: 0.1,
-    flexDirection: "row",
+    flexDirection: "column",
     backgroundColor: "#0577BD",
     justifyContent: "flex-start",
     alignContent: "center",

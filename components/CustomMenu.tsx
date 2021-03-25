@@ -12,6 +12,12 @@ import {
 import { Entypo } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
+import {
+  HOME_PAGE,
+  SHOP_PAGE,
+  VENDITORI_PAGE,
+  PROFILE_PAGE,
+} from "../constants/Urls";
 
 const MenuGradient = Animated.createAnimatedComponent(LinearGradient);
 const Touchable = Animated.createAnimatedComponent(TouchableOpacity);
@@ -61,7 +67,13 @@ const Menu = (props: any) => {
       <MenuWrapper style={{ left: props.left }} colors={["#109CFC", "#2475AD"]}>
         <Logo source={require("../assets/tiendar_logo.png")} />
         <View style={{ height: height * 0.08 }}></View>
-        <MenuItem selected={true}>
+        <MenuItem
+          selected={props.url == HOME_PAGE}
+          onPress={() => {
+            props.setUrl(HOME_PAGE);
+            props.slideOut();
+          }}
+        >
           <Entypo
             style={{ marginRight: 10 }}
             name="home"
@@ -71,7 +83,13 @@ const Menu = (props: any) => {
           <StyledText>Home</StyledText>
         </MenuItem>
         <View style={{ height: height * 0.04 }}></View>
-        <MenuItem>
+        <MenuItem
+          selected={props.url == SHOP_PAGE}
+          onPress={() => {
+            props.setUrl(SHOP_PAGE);
+            props.slideOut();
+          }}
+        >
           <Entypo
             style={{ marginRight: 10 }}
             name="shop"
@@ -81,7 +99,13 @@ const Menu = (props: any) => {
           <StyledText>Shop</StyledText>
         </MenuItem>
         <View style={{ height: height * 0.04 }}></View>
-        <MenuItem>
+        <MenuItem
+          selected={props.url == VENDITORI_PAGE}
+          onPress={() => {
+            props.setUrl(VENDITORI_PAGE);
+            props.slideOut();
+          }}
+        >
           <FontAwesome5
             style={{ marginRight: 10 }}
             name="coins"
@@ -91,7 +115,13 @@ const Menu = (props: any) => {
           <StyledText>Venditori</StyledText>
         </MenuItem>
         <View style={{ height: height * 0.04 }}></View>
-        <MenuItem>
+        <MenuItem
+          selected={props.url == PROFILE_PAGE}
+          onPress={() => {
+            props.setUrl(PROFILE_PAGE);
+            props.slideOut();
+          }}
+        >
           <AntDesign
             style={{ marginRight: 10 }}
             name="user"
