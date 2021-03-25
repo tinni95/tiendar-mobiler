@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
   Image,
+  Animated,
 } from "react-native";
 import { WebView } from "react-native-webview";
 import OverlayLoader from "./components/OverlayLoader";
@@ -21,7 +22,7 @@ export default function App() {
   const [loading, setLoading] = useState<boolean>(false);
   const webView = useRef<WebView | null>(null);
   const [menu, setMenu] = useState(null);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const INJECTED_JAVASCRIPT = `(function() {
     document.querySelector('.et-l').style.display = 'none';
     setTimeout(function(){
@@ -31,7 +32,7 @@ export default function App() {
   })();`;
 
   const showMenu = () => {
-    setOpen(true);
+    slideIn();
   };
 
   const onMessage = (event: any) => {
@@ -51,10 +52,49 @@ export default function App() {
     webView!.current!;
   };
 
+  const left = useRef(new Animated.Value(-400)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
+
+  const slideIn = () => {
+    Animated.parallel([
+      Animated.timing(left, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: false,
+      }),
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start(() => setOpen(true));
+  };
+
+  const slideOut = () => {
+    Animated.parallel([
+      Animated.timing(left, {
+        toValue: -400,
+        duration: 200,
+        useNativeDriver: false,
+      }),
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start(() => setOpen(false));
+  };
+
   return (
     <>
       <View style={styles.container}>
-        {open && <CustomMenu setOpen={setOpen} menu={menu} />}
+        <CustomMenu
+          left={left}
+          menu={menu}
+          open={open}
+          opacity={opacity}
+          slideOut={slideOut}
+        />
         <View style={styles.headerBar}>
           <TouchableOpacity style={{ paddingTop: 20 }} onPress={showMenu}>
             <Ionicons name="md-menu" size={30} color="white" />
