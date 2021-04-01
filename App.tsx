@@ -107,15 +107,6 @@ export default function App() {
   return (
     <>
       <View style={styles.container}>
-        <CustomMenu
-          left={left}
-          setUrl={setUrl}
-          menu={menu}
-          open={open}
-          url={url}
-          opacity={opacity}
-          slideOut={slideOut}
-        />
         <View style={styles.headerBar}>
           <View style={{ flexDirection: "row" }}>
             <TouchableOpacity style={{ paddingTop: 20 }} onPress={showMenu}>
@@ -155,6 +146,15 @@ export default function App() {
             injectedJavaScript={INJECTED_JAVASCRIPT}
           />
         </View>
+        <CustomMenu
+          left={left}
+          setUrl={setUrl}
+          menu={menu}
+          open={open}
+          url={url}
+          opacity={opacity}
+          slideOut={slideOut}
+        />
         {loading && <OverlayLoader />}
       </View>
     </>
