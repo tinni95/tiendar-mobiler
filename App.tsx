@@ -29,15 +29,30 @@ export default function App() {
   const webView = useRef<WebView | null>(null);
   const [menu, setMenu] = useState(null);
   const [open, setOpen] = useState(false);
+
   const INJECTED_JAVASCRIPT = `(function() {
     document.querySelector('.et_pb_section_0_tb_footer').style.display = 'none';
-    document.querySelector('.et-l').style.display = 'none';
+    document.querySelector('.et_pb_image_1_tb_header').style.display = 'none';
+    document.querySelector('.mobile_menu_bar').style.display = 'none';
+    document.querySelector('.et-l').style.position = 'fixed';
+    document.querySelector('.et-l').style.zIndex = '9';
+    document.querySelector('.et-l').style.width = '100%';
+    document.querySelector('.et-l').style.top = '-100px';
+    document.querySelector('.et-l').style.transition = '-100px';
+    document.querySelector('.et-l').style.transition="0.5s all ease";
     document.querySelector('.et_pb_section_2').style.setProperty("padding","0px","important");
     document.querySelector('.et_pb_row_2').style.setProperty("margin","0px","important");
     document.querySelector('.et_pb_row_2').style.setProperty("width","100%");
     document.querySelector('.et_pb_row_2').style.setProperty("padding","20px","important");
     document.querySelector('.et_pb_module_header').style.setProperty("font-size","25px","important");
-
+    window.addEventListener("message", message => {
+      if( document.querySelector('.et-l').style.top == '-100px'){
+        document.querySelector('.et-l').style.top = '0px';
+      }
+      else{
+        document.querySelector('.et-l').style.top = '-100px';
+      }
+    });
     setTimeout(function(){
       window.ReactNativeWebView.postMessage(document.querySelector('.et_mobile_menu').innerHTML);
    }, 2000);
@@ -46,6 +61,10 @@ export default function App() {
 
   const showMenu = () => {
     slideIn();
+  };
+
+  const showSearch = () => {
+    webView!.current!.postMessage("HEY");
   };
 
   const onMessage = (event: any) => {
@@ -122,6 +141,9 @@ export default function App() {
               source={require("./assets/tiendar_logo.png")}
             />
           </View>
+          <TouchableOpacity style={{ paddingTop: 20 }} onPress={showSearch}>
+            <Ionicons name="ios-search" size={30} color="white" />
+          </TouchableOpacity>
         </View>
         {canGoBack && (
           <TouchableOpacity
@@ -167,9 +189,9 @@ const styles = StyleSheet.create({
   },
   headerBar: {
     flex: 0.1,
-    flexDirection: "column",
+    flexDirection: "row",
     backgroundColor: "#0577BD",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     alignContent: "center",
     paddingTop: 20,
     paddingLeft: 20,

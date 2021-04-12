@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components/native";
+import Colors from "../constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   Animated,
@@ -19,13 +20,14 @@ import {
   PROFILE_PAGE,
 } from "../constants/Urls";
 
-const MenuGradient = Animated.createAnimatedComponent(LinearGradient);
+const MenuWrapperAnimated = Animated.createAnimatedComponent(View);
 const Touchable = Animated.createAnimatedComponent(TouchableOpacity);
 const height = Dimensions.get("window").height;
 
-const MenuWrapper = styled(MenuGradient)`
+const MenuWrapper = styled(MenuWrapperAnimated)`
   position: absolute;
   padding-left: 20px;
+  background-color: ${Colors.BLUE};
   padding-right: 20px;
   padding-top: 50px;
   width: 70%;
